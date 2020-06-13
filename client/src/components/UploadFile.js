@@ -21,6 +21,7 @@ export class UploadFile extends Component {
     fileReader.onloadend = () => {
       this.setState({
         file: {
+          id: this.props.generateRandomId(),
           name: rawFile.name,
           data: fileReader.result,
           dataType: fileReader.result.split(";")[0].split(":")[1],

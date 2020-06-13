@@ -1,14 +1,78 @@
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 
 export class UploadFile extends Component {
+  state = {
+    file: {
+      name: "",
+      data: "",
+      sizeInBytes: 0,
+    },
+  };
+
+  getUserFile = () => {
+    this.fileInput.current.click();
+  };
+
+  // Parses uploaded file & sends
+  processFile = (e) => {
+    let rawFile = this.fileInput.current.files[0];
+
+    let fileReader = new FileReader();
+    fileReader.onloadend = () => {
+      this.setState({
+        file: {
+          name: rawFile.name,
+          data: fileReader.result,
+          dataType: fileReader.result.split(";")[0].split(":")[1],
+          sizeInBytes: rawFile.size,
+        },
+      });
+
+      this.updateAppState();
+    };
+    fileReader.readAsDataURL(rawFile);
+  };
+
+  updateAppState = () => {
+    this.props.addFile(this.state.file);
+  };
+
+  constructor(props) {
+    super(props);
+    this.fileInput = createRef();
+  }
+
   render() {
     return (
       <div>
-        Upload File:
-        <input type="file" />
+        <button style={uploadButtonStyle} onClick={this.getUserFile}>
+          Upload File
+        </button>
+        <input
+          style={uploadFileStyle}
+          type="file"
+          ref={this.fileInput}
+          onChange={this.processFile}
+        />
       </div>
     );
   }
 }
+
+const uploadFileStyle = {
+  visibility: "hidden",
+};
+
+const uploadButtonStyle = {
+  color: "black",
+  backgroundColor: "white",
+  fontSize: "25px",
+  border: "5px solid black",
+  padding: "15px 25px",
+  borderRadius: "25px",
+  fontWeight: "bold",
+  display: "block",
+  margin: "auto",
+};
 
 export default UploadFile;

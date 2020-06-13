@@ -13,13 +13,15 @@ export class File extends Component {
 
   render() {
     return (
-      <div>
+      <div style={fileStyle}>
         <img src={FileImage} alt="File" style={imageStyle} />
-        <p>Name: {this.props.file.name}</p>
-        <p>Size: {this.props.file.sizeInBytes} bytes</p>
+        <p style={{ fontWeight: "bold" }}> Name: {this.props.file.name}</p>
+        <p>Size: {this.props.file.sizeInBytes} Bytes</p>
         <p>MIME Type: {this.props.file.dataType}</p>
         <p>Id: {this.props.file.id}</p>
-        <button onClick={this.downloadFile}>Download</button>
+        <button style={downloadFileButtonStyle} onClick={this.downloadFile}>
+          Download File
+        </button>
         <a
           href={this.props.file.data}
           download={this.props.file.name}
@@ -34,12 +36,30 @@ export class File extends Component {
 }
 
 const imageStyle = {
-  maxWidth: "100px",
+  maxWidth: "140px",
   height: "auto",
+  float: "left",
 };
 
 const downloadATagStyle = {
   visibility: "hidden",
+};
+
+const downloadFileButtonStyle = {
+  color: "black",
+  backgroundColor: "white",
+  fontSize: "15px",
+  border: "5px solid black",
+  padding: "15px 25px",
+  borderRadius: "25px",
+};
+
+const fileStyle = {
+  display: "block",
+  // margin: "auto",
+  margin: "0 auto",
+  // width: "300px",
+  width: "20%",
 };
 
 export default File;

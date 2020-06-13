@@ -5,7 +5,9 @@ export class Files extends Component {
   render() {
     return (
       <div>
-        <h2>Uploaded Files</h2>
+        <br />
+        <h2 style={uploadFilesTextStyle}>Uploaded Files</h2>
+        {/* <br /> */}
         {this.props.files.map((file) => (
           <File file={file} key={file.id} />
         ))}
@@ -13,5 +15,9 @@ export class Files extends Component {
     );
   }
 }
+
+const uploadFilesTextStyle = {
+  textAlign: "center",
+};
 
 export default Files;

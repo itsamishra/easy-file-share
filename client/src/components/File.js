@@ -25,7 +25,9 @@ export class File extends Component {
           download={this.props.file.name}
           style={downloadATagStyle}
           ref={this.downloadATag}
-        />
+        >
+          Download
+        </a>
       </div>
     );
   }

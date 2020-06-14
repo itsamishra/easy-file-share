@@ -1,4 +1,5 @@
 import React, { Component, createRef } from "react";
+import FileTooLargeWarning from "./FileTooLargeWarning";
 
 export class UploadFile extends Component {
   state = {
@@ -6,7 +7,13 @@ export class UploadFile extends Component {
       name: "",
       data: "",
       sizeInBytes: 0,
+      base64SizeInBytes: 0,
     },
+    uploadTooLarge: false,
+  };
+
+  getFilesBase64SizeInBytes = () => {
+    return this.state.file.base64SizeInBytes;
   };
 
   getUserFile = () => {
@@ -34,13 +41,10 @@ export class UploadFile extends Component {
         this.state.file.base64SizeInBytes <=
         this.props.getBase64SizeLimitInBytes()
       ) {
+        this.setState({ uploadTooLarge: false });
         this.distributeFile();
       } else {
-        console.log(
-          `That file is too large (${
-            this.state.file.base64SizeInBytes
-          } bytes)! The size limit is ${this.props.getBase64SizeLimitInBytes()} bytes!`
-        );
+        this.setState({ uploadTooLarge: true });
       }
     };
 
@@ -61,6 +65,19 @@ export class UploadFile extends Component {
   }
 
   render() {
+    let fileTooLargeWarning = null;
+
+    if (this.state.uploadTooLarge) {
+      fileTooLargeWarning = (
+        <FileTooLargeWarning
+          getBase64SizeLimitInBytes={this.props.getBase64SizeLimitInBytes}
+          getFilesBase64SizeInBytes={this.getFilesBase64SizeInBytes}
+        />
+      );
+    } else {
+      fileTooLargeWarning = null;
+    }
+
     return (
       <div>
         <button style={uploadButtonStyle} onClick={this.getUserFile}>
@@ -72,6 +89,8 @@ export class UploadFile extends Component {
           ref={this.fileInput}
           onChange={this.processFile}
         />
+
+        {fileTooLargeWarning}
       </div>
     );
   }

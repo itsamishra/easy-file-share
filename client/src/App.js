@@ -4,9 +4,6 @@ import Files from "./components/Files";
 import UploadFile from "./components/UploadFile";
 import openSocket from "socket.io-client";
 
-// TOOD: Add a prompt whenever file size is too large to upload
-// TODO: Rename project
-
 export class App extends Component {
   state = {
     files: [],
@@ -32,14 +29,10 @@ export class App extends Component {
   // If number of files is greater than max number, removes the first one
   removeExtraFile = () => {
     while (this.state.files.length > this.state.maxNumberOfFilesInClient) {
-      // console.log(this.state.files);
-      // this.state.files.shift();
-
       let dummyFiles = this.state.files;
       dummyFiles.shift();
       this.setState({ files: dummyFiles });
     }
-    // console.log(this.state.files);
   };
 
   addNewFile = (file) => {
@@ -62,7 +55,6 @@ export class App extends Component {
       this.setState({
         maxNumberOfFilesInClient: appInfo.maxNumberOfFilesInClient,
       });
-      console.log(this.state);
     });
 
     // Adds new file

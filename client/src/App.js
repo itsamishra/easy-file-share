@@ -4,6 +4,8 @@ import Files from "./components/Files";
 import UploadFile from "./components/UploadFile";
 import openSocket from "socket.io-client";
 
+// TODO: Move server into its own directory (like client is in 'client' directory)
+// TOOD: Add README.md
 // TODO: Add size limit on file uploads
 // TODO: Add "Remove All Files" component that clears all files saved in browser
 
@@ -48,7 +50,6 @@ export class App extends Component {
         <UploadFile
           addFile={this.addFile}
           generateRandomId={this.generateRandomId}
-          // sendFile={sendFile}
         />
         <Files files={this.state.files} />
       </React.Fragment>

@@ -29,13 +29,14 @@ export class UploadFile extends Component {
         },
       });
 
-      this.updateAppState();
+      this.distributeFile();
     };
     fileReader.readAsDataURL(rawFile);
   };
 
-  updateAppState = () => {
-    this.props.addFile(this.state.file);
+  distributeFile = () => {
+    this.props.addNewFile(this.state.file);
+    this.props.sendFileToServer(this.state.file);
   };
 
   constructor(props) {

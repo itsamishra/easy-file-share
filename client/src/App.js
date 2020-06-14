@@ -4,6 +4,7 @@ import Files from "./components/Files";
 import UploadFile from "./components/UploadFile";
 import openSocket from "socket.io-client";
 
+// DONE: Change the way I call addFile (make it 2 calls, 1 to add file to current App's state and 1 to add file to other clients)
 // TODO: Move server into its own directory (like client is in 'client' directory)
 // TOOD: Add README.md
 // TODO: Add size limit on file uploads
@@ -29,8 +30,7 @@ export class App extends Component {
     this.setState({ files: [...this.state.files, file] });
   };
 
-  addFile = (file) => {
-    this.addNewFile(file);
+  sendFileToServer = (file) => {
     this.state.socket.emit("sendFileToServer", file);
   };
 
@@ -48,7 +48,8 @@ export class App extends Component {
       <React.Fragment>
         <Header />
         <UploadFile
-          addFile={this.addFile}
+          addNewFile={this.addNewFile}
+          sendFileToServer={this.sendFileToServer}
           generateRandomId={this.generateRandomId}
         />
         <Files files={this.state.files} />

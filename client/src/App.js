@@ -2,47 +2,15 @@ import React, { Component } from "react";
 import Header from "./components/Header";
 import Files from "./components/Files";
 import UploadFile from "./components/UploadFile";
+import openSocket from "socket.io-client";
+
+// TODO: Add size limit on file uploads
+// TODO: Add "Remove All Files" component that clears all files saved in browser
 
 export class App extends Component {
   state = {
-    files: [
-      // {
-      //   id: "9ff363ac-3d43",
-      //   name: "main.c",
-      //   data:
-      //     "data:text/x-csrc;base64,I2luY2x1ZGUgPHN0ZGlvLmg+CgppbnQgbWFpbigpe3ByaW50ZigiSGVsbG8sIFdvcmxkXG4iKTtyZXR1cm4gMDt9Cg==",
-      //   dataType: "text/x-csrc",
-      //   sizeInBytes: 67,
-      // },
-      // {
-      //   id: "9ff363ac-3d43",
-      //   name: "main.c",
-      //   data:
-      //     "data:text/x-csrc;base64,I2luY2x1ZGUgPHN0ZGlvLmg+CgppbnQgbWFpbigpe3ByaW50ZigiSGVsbG8sIFdvcmxkXG4iKTtyZXR1cm4gMDt9Cg==",
-      //   dataType: "text/x-csrc",
-      //   sizeInBytes: 67,
-      // },
-      // {
-      //   id: "9ff363ac-3d43",
-      //   name: "main.c",
-      //   data:
-      //     "data:text/x-csrc;base64,I2luY2x1ZGUgPHN0ZGlvLmg+CgppbnQgbWFpbigpe3ByaW50ZigiSGVsbG8sIFdvcmxkXG4iKTtyZXR1cm4gMDt9Cg==",
-      //   dataType: "text/x-csrc",
-      //   sizeInBytes: 67,
-      // },
-      // {
-      //   id: "9ff363ac-3d43",
-      //   name: "main.c",
-      //   data:
-      //     "data:text/x-csrc;base64,I2luY2x1ZGUgPHN0ZGlvLmg+CgppbnQgbWFpbigpe3ByaW50ZigiSGVsbG8sIFdvcmxkXG4iKTtyZXR1cm4gMDt9Cg==",
-      //   dataType: "text/x-csrc",
-      //   sizeInBytes: 67,
-      // },
-    ],
-  };
-
-  addFile = (file) => {
-    this.setState({ files: [...this.state.files, file] });
+    files: [],
+    socket: null,
   };
 
   // Generates random ID
@@ -55,6 +23,24 @@ export class App extends Component {
     return s4() + s4() + "-" + s4();
   };
 
+  addNewFile = (file) => {
+    this.setState({ files: [...this.state.files, file] });
+  };
+
+  addFile = (file) => {
+    this.addNewFile(file);
+    this.state.socket.emit("sendFileToServer", file);
+  };
+
+  componentDidMount() {
+    const socket = openSocket("http://localhost:4000");
+    this.setState({ socket: socket });
+
+    socket.on("sendFileToClient", (file) => {
+      this.addNewFile(file);
+    });
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -62,6 +48,7 @@ export class App extends Component {
         <UploadFile
           addFile={this.addFile}
           generateRandomId={this.generateRandomId}
+          // sendFile={sendFile}
         />
         <Files files={this.state.files} />
       </React.Fragment>

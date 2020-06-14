@@ -4,13 +4,15 @@ import Files from "./components/Files";
 import UploadFile from "./components/UploadFile";
 import openSocket from "socket.io-client";
 
-// TODO: Add "Remove All Files" component that clears all files saved in browser
+// TOOD: Add a prompt whenever file size is too large to upload
+// TODO: Rename project
 
 export class App extends Component {
   state = {
     files: [],
     socket: null,
     base64SizeLimitInBytes: null,
+    maxNumberOfFilesInClient: null,
   };
 
   getBase64SizeLimitInBytes = () => {
@@ -27,8 +29,22 @@ export class App extends Component {
     return s4() + s4() + "-" + s4();
   };
 
+  // If number of files is greater than max number, removes the first one
+  removeExtraFile = () => {
+    while (this.state.files.length > this.state.maxNumberOfFilesInClient) {
+      // console.log(this.state.files);
+      // this.state.files.shift();
+
+      let dummyFiles = this.state.files;
+      dummyFiles.shift();
+      this.setState({ files: dummyFiles });
+    }
+    // console.log(this.state.files);
+  };
+
   addNewFile = (file) => {
     this.setState({ files: [...this.state.files, file] });
+    this.removeExtraFile();
   };
 
   sendFileToServer = (file) => {
@@ -40,10 +56,13 @@ export class App extends Component {
     const socket = openSocket("http://localhost:4000");
     this.setState({ socket: socket });
 
-    // Gets base 64 size limit in bytes
-    socket.emit("askServerForBase64SizeLimitInBytes");
-    socket.on("sendBase64SizeLimitToClient", (base64SizeLimitInBytes) => {
-      this.setState({ base64SizeLimitInBytes: base64SizeLimitInBytes });
+    socket.emit("askServerForAppInfo");
+    socket.on("sendAppInfoToClient", (appInfo) => {
+      this.setState({ base64SizeLimitInBytes: appInfo.base64SizeLimitInBytes });
+      this.setState({
+        maxNumberOfFilesInClient: appInfo.maxNumberOfFilesInClient,
+      });
+      console.log(this.state);
     });
 
     // Adds new file

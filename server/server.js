@@ -1,18 +1,17 @@
 const io = require("socket.io")();
 
-const base64SizeLimitInBytes = 10000000; // 10 MB size limit
-
-fileIsSmallerThanBase64SizeLimitInBytes = (file) => {
-  return file.base64SizeInBytes <= base64SizeLimitInBytes;
+const appInfo = {
+  base64SizeLimitInBytes: 10000000,
+  maxNumberOfFilesInClient: 5,
 };
 
 io.on("connection", (client) => {
-  client.on("askServerForBase64SizeLimitInBytes", () => {
-    client.emit("sendBase64SizeLimitToClient", base64SizeLimitInBytes);
+  client.on("askServerForAppInfo", () => {
+    client.emit("sendAppInfoToClient", appInfo);
   });
 
   client.on("sendFileToServer", (file) => {
-    if (file.base64SizeInBytes <= base64SizeLimitInBytes) {
+    if (file.base64SizeInBytes <= appInfo.base64SizeLimitInBytes) {
       client.broadcast.emit("sendFileToClient", file);
     } else {
       console.log("File is too large!");

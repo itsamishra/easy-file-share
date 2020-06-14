@@ -5,8 +5,8 @@ import UploadFile from "./components/UploadFile";
 import openSocket from "socket.io-client";
 
 // DONE: Change the way I call addFile (make it 2 calls, 1 to add file to current App's state and 1 to add file to other clients)
-// TODO: Move server into its own directory (like client is in 'client' directory)
-// TOOD: Add README.md
+// DONE: Move server into its own directory (like client is in 'client' directory)
+// DONE: Add README.md
 // TODO: Add size limit on file uploads
 // TODO: Add "Remove All Files" component that clears all files saved in browser
 

@@ -4,16 +4,17 @@ import Files from "./components/Files";
 import UploadFile from "./components/UploadFile";
 import openSocket from "socket.io-client";
 
-// DONE: Change the way I call addFile (make it 2 calls, 1 to add file to current App's state and 1 to add file to other clients)
-// DONE: Move server into its own directory (like client is in 'client' directory)
-// DONE: Add README.md
-// TODO: Add size limit on file uploads
 // TODO: Add "Remove All Files" component that clears all files saved in browser
 
 export class App extends Component {
   state = {
     files: [],
     socket: null,
+    base64SizeLimitInBytes: null,
+  };
+
+  getBase64SizeLimitInBytes = () => {
+    return this.state.base64SizeLimitInBytes;
   };
 
   // Generates random ID
@@ -35,9 +36,17 @@ export class App extends Component {
   };
 
   componentDidMount() {
+    // Creates socket
     const socket = openSocket("http://localhost:4000");
     this.setState({ socket: socket });
 
+    // Gets base 64 size limit in bytes
+    socket.emit("askServerForBase64SizeLimitInBytes");
+    socket.on("sendBase64SizeLimitToClient", (base64SizeLimitInBytes) => {
+      this.setState({ base64SizeLimitInBytes: base64SizeLimitInBytes });
+    });
+
+    // Adds new file
     socket.on("sendFileToClient", (file) => {
       this.addNewFile(file);
     });
@@ -51,6 +60,7 @@ export class App extends Component {
           addNewFile={this.addNewFile}
           sendFileToServer={this.sendFileToServer}
           generateRandomId={this.generateRandomId}
+          getBase64SizeLimitInBytes={this.getBase64SizeLimitInBytes}
         />
         <Files files={this.state.files} />
       </React.Fragment>

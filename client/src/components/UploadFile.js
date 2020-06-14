@@ -24,14 +24,30 @@ export class UploadFile extends Component {
           id: this.props.generateRandomId(),
           name: rawFile.name,
           data: fileReader.result,
+          base64SizeInBytes: fileReader.result.length * 2,
           dataType: fileReader.result.split(";")[0].split(":")[1],
           sizeInBytes: rawFile.size,
         },
       });
 
-      this.distributeFile();
+      if (
+        this.state.file.base64SizeInBytes <=
+        this.props.getBase64SizeLimitInBytes()
+      ) {
+        this.distributeFile();
+      } else {
+        console.log(
+          `That file is too large (${
+            this.state.file.base64SizeInBytes
+          } bytes)! The size limit is ${this.props.getBase64SizeLimitInBytes()} bytes!`
+        );
+      }
     };
-    fileReader.readAsDataURL(rawFile);
+
+    // As long as file has been uploaded, reads it
+    if (rawFile !== undefined) {
+      fileReader.readAsDataURL(rawFile);
+    }
   };
 
   distributeFile = () => {

@@ -17,6 +17,7 @@ export class File extends Component {
         <img src={FileImage} alt="File" style={imageStyle} />
         <p style={{ fontWeight: "bold" }}> Name: {this.props.file.name}</p>
         <p>Size: {this.props.file.sizeInBytes} Bytes</p>
+        <p>Base64 Size: {this.props.file.base64SizeInBytes} Bytes</p>
         <p>MIME Type: {this.props.file.dataType}</p>
         <p>Id: {this.props.file.id}</p>
         <button style={downloadFileButtonStyle} onClick={this.downloadFile}>

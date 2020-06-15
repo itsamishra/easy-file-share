@@ -46,8 +46,7 @@ export class App extends Component {
 
   componentDidMount() {
     // Creates socket
-    const socket = openSocket(":4000");
-    // const socket = openSocket("http://192.168.86.111:4000");
+    const socket = openSocket(":3001");
     this.setState({ socket: socket });
 
     socket.emit("askServerForAppInfo");

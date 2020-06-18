@@ -12,4 +12,4 @@
 
 - React frontend
 - Nodejs backend
-- WebSocket-based file transfer
+- WebSocket-based file transfer (using socket.io library)
